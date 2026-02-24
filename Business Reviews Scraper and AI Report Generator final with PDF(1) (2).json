@@ -1,0 +1,973 @@
+{
+  "name": "Business Reviews Scraper and AI Report Generator final with PDF(1)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Business Review Collection Form",
+        "formDescription": "Enter 3 business names and their Google Maps URLs to scrape reviews and generate an AI-powered analysis report",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Business Name 1",
+              "fieldName": "business1_name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Business URL 1",
+              "fieldName": "business1_url",
+              "placeholder": "https://maps.google.com/...",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Business Name 2",
+              "fieldName": "business2_name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Business URL 2",
+              "fieldName": "business2_url",
+              "placeholder": "https://maps.google.com/...",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Business Name 3",
+              "fieldName": "business3_name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Business URL 3",
+              "fieldName": "business3_url",
+              "placeholder": "https://maps.google.com/...",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Thank you! Your business reviews are being scraped and analyzed. Check your Google Sheet for the results."
+            }
+          }
+        }
+      },
+      "id": "6a906bac-7fc7-4b4f-a917-2e95222c0323",
+      "name": "Business Review Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -1392,
+        272
+      ],
+      "webhookId": "32a72ef3-eb09-4515-a432-23e9cfac4a7a"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw",
+          "mode": "list",
+          "cachedResultName": "Reviews",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "business1_name",
+              "displayName": "business1_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business1_url",
+              "displayName": "business1_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business2_name",
+              "displayName": "business2_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business2_url",
+              "displayName": "business2_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business3_name",
+              "displayName": "business3_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business3_url",
+              "displayName": "business3_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "submission_timestamp",
+              "displayName": "submission_timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9dd61a84-a6a4-4fde-8afa-70237ab070cd",
+      "name": "Store Form Responses",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -976,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "businesses",
+        "options": {}
+      },
+      "id": "21a35416-3fe4-4d31-8dcc-7722e1695244",
+      "name": "Split Business URLs",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "2921586b-a5df-4c64-8ea6-fb8722688d98",
+      "name": "Loop Over Businesses",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -320,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "aggregatedData",
+        "options": {}
+      },
+      "id": "8efe0991-eba8-477a-8bde-b75f6e4018e0",
+      "name": "Combine All Reviews",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        544,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"businessName\": \"Example Restaurant\",\n  \"totalReviews\": 150,\n  \"averageRating\": 4.2,\n  \"sentimentSummary\": \"Overall positive with some service concerns\",\n  \"keyStrengths\": [\"Great food quality\", \"Friendly staff\", \"Clean environment\"],\n  \"keyWeaknesses\": [\"Slow service during peak hours\", \"Limited parking\"],\n  \"recommendations\": [\"Hire additional staff for busy periods\", \"Improve parking signage\"],\n  \"topPositiveReview\": \"Amazing food and atmosphere!\",\n  \"topNegativeReview\": \"Waited 45 minutes for our order\"\n}"
+      },
+      "id": "245925bb-78b0-4940-b54c-fa0ddf9c1887",
+      "name": "Report Structure Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following Google Maps reviews and generate a structured business report.\n\nReviews Data:\n{{ JSON.stringify($input.all().map(item => item.json), null, 2) }}\n\nInstructions:\n- Group reviews by placeName.\n- Calculate totalReviews and averageRating using actual ratings.\n- Perform sentiment analysis from review text.\n- Identify top strengths and weaknesses mentioned repeatedly.\n- Provide actionable recommendations.\n- Select one strong positive review and one critical negative review.\n\nReturn ONLY valid JSON in this structure:\n[\n  {\n    \"businessName\": \"\",\n    \"totalReviews\": 0,\n    \"averageRating\": 0,\n    \"sentimentSummary\": \"\",\n    \"keyStrengths\": [],\n    \"keyWeaknesses\": [],\n    \"recommendations\": [],\n    \"topPositiveReview\": \"\",\n    \"topNegativeReview\": \"\"\n  }\n]\nDo not include explanations or markdown.\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert business analyst specializing in customer review analysis. Your task is to analyze Google Maps reviews and provide actionable insights to help business owners improve their operations, customer satisfaction, and online reputation. Focus on patterns, sentiment trends, and specific actionable recommendations."
+        }
+      },
+      "id": "267fe075-b5e5-407f-9676-0c6cfd3c3f0f",
+      "name": "Generate Review Report",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        240,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "Business Name",
+              "value": "={{ $json.output.businessName }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "Total Reviews",
+              "value": "={{ $json.output.totalReviews }}",
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "Average Rating",
+              "value": "={{ $json.output.averageRating }}",
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "Sentiment Summary",
+              "value": "={{ $json.output.sentimentSummary }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "Key Strengths",
+              "value": "={{ $json.output.keyStrengths }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "Key Weaknesses",
+              "value": "={{ $json.output.keyWeaknesses }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "Recommendations",
+              "value": "={{ $json.output.recommendations }}",
+              "type": "string"
+            },
+            {
+              "id": "id-8",
+              "name": "Top Positive Review",
+              "value": "={{ $json.output.topPositiveReview }}",
+              "type": "string"
+            },
+            {
+              "id": "id-9",
+              "name": "Top Negative Review",
+              "value": "={{ $json.output.topNegativeReview }}",
+              "type": "string"
+            },
+            {
+              "id": "id-10",
+              "name": "Report Generated",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d501e5a1-c762-48bc-92f4-5ffa6d0337a5",
+      "name": "Format Report for Sheets",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw",
+          "mode": "list",
+          "cachedResultName": "Reviews",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1109342212,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit#gid=1109342212"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "2d654273-672a-429f-970c-73203267bb80",
+      "name": "Store Report in Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        864,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        192,
+        720
+      ],
+      "id": "89f30540-74ee-49a4-bca6-27050a72a56f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2UI4pFZLydWGSLxd",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "business1_name",
+              "value": "={{ $json.business1_name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "business1_url",
+              "value": "={{ $json.business1_url }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "business2_name",
+              "value": "={{ $json.business2_name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "business2_url",
+              "value": "={{ $json.business2_url }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "business3_name",
+              "value": "={{ $json.business3_name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "business3_url",
+              "value": "={{ $json.business3_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b3460963-1953-4449-879c-6dd16e99da4d",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1312,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "businesses",
+              "value": "={{ [{ 'name': $json.business1_name, 'url': $json.business1_url }, { 'name': $json.business2_name, 'url': $json.business2_url }, { 'name': $json.business3_name, 'url': $json.business3_url }] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5a7866f2-13ba-4edb-82f4-f323b42d2746",
+      "name": "Structure Business Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -864,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "="
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"language\": \"en\",\n    \"maxReviews\": 50,\n    \"personalData\": true,\n    \"reviewsSort\": \"newest\",\n    \"startUrls\": [\n        {\n            \"url\": \"{{ $json.url }}\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3b04f5fb-dee0-4298-aaec-345ccd8aacca",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Report</title>\n<style>\nbody { font-family: Arial, sans-serif; padding: 20px; }\nh1, h2, h3 { color: #2c3e50; }\np { line-height: 1.6; }\n</style>\n</head>\n<body>\n\n<pre style=\"white-space: pre-wrap; font-family: Arial;\">\n{{ $json.output }}\n</pre>\n\n</body>\n</html>\n\n"
+      },
+      "id": "d3abe65d-1189-4d26-8a6c-882457348660",
+      "name": "Format as HTML1",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw",
+          "mode": "list",
+          "cachedResultName": "Reviews",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1109342212,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gi3kq71GINTCJKQz3YaM4Ef-1pKDkhdXDX2_qK80Wqw/edit#gid=1109342212"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -384,
+        1408
+      ],
+      "id": "10339b56-3c88-4259-8d10-4479e538c609",
+      "name": "Get row(s) in sheet2"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "row_number",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        64,
+        1424
+      ],
+      "id": "fdab5d93-c58b-45d1-8a6a-f201608d6ead",
+      "name": "Sort1"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        240,
+        1168
+      ],
+      "id": "b9a9007d-514e-420b-a5bf-3ef6aa856bbb",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "d1a86833-9695-475e-9abd-9cfe664633d0",
+      "name": "Combine Data for AI1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        384,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "You are a business analyst creating a simple, professional competitor report from Google Sheets data.\n\nYour task is to read the provided rows (each row = one business) and generate a structured report.\n\nIMPORTANT:\n- First create an individual summary for EACH business.\n- Then create a comparison section between all businesses.\n- Use very simple language so any non-technical person can understand.\n- Add relevant emojis to make the report engaging but keep it professional.\n- Do NOT mention missing data or technical limitations.\n- Present insights confidently based on available rating, reviews, and name.\n- Format the response using clear headings so it converts cleanly into a PDF.\n\n-------------------------------------\n\nREPORT STRUCTURE:\n\n## 📊 Competitor Analysis Report\n\n### 🏢 Business 1: {Business Name}\nGive a short introduction.\n\n**⭐ Overall Rating Insight**\nExplain what the rating means.\n\n**💪 Strengths**\nWrite 3–4 likely strengths based on rating/review volume.\n\n**⚠️ Areas to Improve**\nWrite realistic improvement areas.\n\n**🎯 Market Impression**\nHow customers likely see this brand.\n\n-------------------------------------\n\n### 🏢 Business 2: {Business Name}\n(Same structure as above)\n\n-------------------------------------\n\n### 🏢 Business 3: {Business Name}\n(Same structure as above)\n\n-------------------------------------\n\n## ⚖️ Side-by-Side Comparison\n\nCompare all three businesses in an easy way:\n\n- Who has the strongest reputation\n- Who is mid-range\n- Who needs improvement\n- Customer trust comparison\n- Visibility in market\n\nUse bullet points.\n\n-------------------------------------\n\n## 📈 Market Position Summary\n\nExplain how they stand together in the local competition.\n\n-------------------------------------\n\n## 🚀 Recommendations\n\nGive practical suggestions:\n- How the weaker business can improve\n- How the stronger one can maintain lead\n- What all three should focus on\n\n-------------------------------------\n\nSTYLE RULES:\n✔ Use simple English  \n✔ Keep sentences short  \n✔ Use emojis for readability  \n✔ Avoid jargon  \n✔ Make it look like a real consulting report  \n✔ Output must be clean Markdown (for HTML → PDF conversion)\n"
+        }
+      },
+      "id": "01a3e853-c62b-47e7-867f-e043f061396f",
+      "name": "Generate Comparison Report1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        592,
+        1296
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        336,
+        1568
+      ],
+      "id": "8583f04a-6b82-40eb-b0e3-4fb8dc814c56",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "2UI4pFZLydWGSLxd",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "URL/HTML to PDF",
+        "convertType": "htmlToPDF",
+        "html": "={{ $json.html }}",
+        "advancedOptions": {
+          "name": "COMPARISON.pdf",
+          "paperSize": "a4",
+          "mediaType": "print"
+        }
+      },
+      "type": "n8n-nodes-pdfco.PDFco Api",
+      "typeVersion": 1,
+      "position": [
+        832,
+        1536
+      ],
+      "id": "439c8a54-811b-4eff-b1ef-695a0a9b9344",
+      "name": "PDFco Api1",
+      "credentials": {
+        "pdfcoApi": {
+          "id": "w5TTEpnh6On6PN4s",
+          "name": "PDF.co account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        688,
+        1152
+      ],
+      "id": "eab8e8e2-fa47-485e-8fe3-9bcd88019877",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1J6Ta3FErZ0SWmF5tjmV0tu_VcZABRk1V",
+          "mode": "list",
+          "cachedResultName": "N8N",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1J6Ta3FErZ0SWmF5tjmV0tu_VcZABRk1V"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        896,
+        1200
+      ],
+      "id": "5c13535e-b6ec-4a82-93f8-668f2035fc00",
+      "name": "Upload file1"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "row_number",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        112,
+        1280
+      ],
+      "id": "ef936481-5699-4b50-8c79-258f8664a654",
+      "name": "Remove Duplicates"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Business Review Form": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Form Responses": {
+      "main": [
+        [
+          {
+            "node": "Structure Business Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Business URLs": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Businesses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Businesses": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine All Reviews": {
+      "main": [
+        [
+          {
+            "node": "Generate Review Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report Structure Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Review Report",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Review Report": {
+      "main": [
+        [
+          {
+            "node": "Format Report for Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Report for Sheets": {
+      "main": [
+        [
+          {
+            "node": "Store Report in Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Review Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Store Form Responses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structure Business Data": {
+      "main": [
+        [
+          {
+            "node": "Split Business URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Combine All Reviews",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Report in Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Businesses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format as HTML1": {
+      "main": [
+        [
+          {
+            "node": "PDFco Api1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Sort1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort1": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Combine Data for AI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Data for AI1": {
+      "main": [
+        [
+          {
+            "node": "Generate Comparison Report1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Comparison Report1": {
+      "main": [
+        [
+          {
+            "node": "Format as HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Comparison Report1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDFco Api1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c4f7b6ab-d6d7-466d-9cc9-d0e58ed99c40",
+  "meta": {
+    "instanceId": "e3c9389aa6370afe2e6d63c192f6e5feb4738236c5bfd2c1949e93d524394b5c"
+  },
+  "id": "oyLIkfzysDgHxPkN",
+  "tags": []
+}
